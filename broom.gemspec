@@ -1,11 +1,12 @@
 require 'rubygems'
 
 $:.unshift(File.dirname(__FILE__))
+require 'lib/broom'
 
 Gem::Specification.new do |s|
   
   s.name        = "broom"
-  s.version     = "0.0.1"
+  s.version     = "#{Broom::VERSION}"
   s.date        = Time.now.strftime('%Y-%m-%d')
   s.homepage    = "http://github.com/djohnston/broom"
   s.authors     = ["Daniel Johnston"]
