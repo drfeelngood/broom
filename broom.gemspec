@@ -17,6 +17,6 @@ Gem::Specification.new do |s|
   A small module for watching a directory for new files.
 DESC
 
-  s.files       = ['README.markdown', 'LICENSE', 'Rakefile', 'lib/broom.rb')
+  s.files       = ['README.markdown', 'LICENSE', 'Rakefile', 'lib/broom.rb']
 
 end
