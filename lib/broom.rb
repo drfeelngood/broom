@@ -6,6 +6,8 @@ Signal.trap('INT') do
 end
 
 module Broom
+
+  VERSION = '0.1.0'
   
   class Directory
 
@@ -42,14 +44,12 @@ module Broom
         begin
           yield(file)
         rescue Object => boom
-          $stdout.puts "uncaught error #{boom.class}: #{boom.message}"
-          $stdout.puts boom.backtrace.join("\n"))
           FileUtils.mv(file, dir.failure_dir)
         else
           FileUtils.mv(file, dir.success_dir)
         end
       end
-      sleep 1
+      sleep options[:sleep] || 1
     end
   end
   
