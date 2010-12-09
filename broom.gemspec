@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
 DESC
 
   s.files       = %w(README.markdown LICENSE Rakefile)
-  s.files      += 'lib/broom'
+  s.files      += ['lib/broom']
 
 end
