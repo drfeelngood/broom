@@ -7,7 +7,7 @@ end
 
 module Broom
 
-  VERSION = '0.1.0'
+  VERSION = '0.3.0'
   
   class Directory
 
@@ -23,7 +23,7 @@ module Broom
       end
     end
     
-    def cache
+    def entries
       files = {}
       Dir.glob(File.join(@path, @pattern)).each { |file|
         next if file == @success_dir || file == @failure_dir
@@ -39,7 +39,10 @@ module Broom
   def sweep(path, options={}, &block)
     dir = Directory.new(path, options)
     loop do
-      dir.cache.each do |file, modified_at|
+      cache = dir.entries
+      sleep options[:sleep] || 1
+      
+      cache.each do |file, modified_at|
         next if modified_at != File.mtime(file)
         begin
           yield(file)
@@ -49,7 +52,6 @@ module Broom
           FileUtils.mv(file, dir.success_dir)
         end
       end
-      sleep options[:sleep] || 1
     end
   end
   
