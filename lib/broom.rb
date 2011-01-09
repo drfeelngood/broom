@@ -7,7 +7,7 @@ end
 
 module Broom
 
-  VERSION = '0.3.0'
+  VERSION = '0.3.1'
   
   class Directory
 
@@ -47,6 +47,8 @@ module Broom
         begin
           yield(file)
         rescue Object => boom
+          puts "#{Time.now} : #{boom.class}: #{boom.message}"
+          puts boom.backtrace.join("\n")
           FileUtils.mv(file, dir.failure_dir)
         else
           FileUtils.mv(file, dir.success_dir)
