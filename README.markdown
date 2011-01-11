@@ -21,6 +21,6 @@ Installation
 Examples
 ========
 
-	Broom.sweep('/tmp', :pattern => '*.pdf') do |file|
-          Resque.enqueue(Job, file)
+	Broom.sweep('/tmp', :pattern => '*.ext') do |file|
+      Resque.enqueue(Job, file)
 	end
