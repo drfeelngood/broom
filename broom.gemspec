@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.name        = "broom"
   s.version     = "#{Broom::VERSION}"
   s.date        = Time.now.strftime('%Y-%m-%d')
-  s.homepage    = "http://github.com/djohnston/broom"
+  s.homepage    = "https://github.com/drfeelngood/broom"
   s.authors     = ["Daniel Johnston"]
   s.email       = "dan@dj-agiledev.com"
   
