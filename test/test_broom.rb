@@ -27,5 +27,28 @@ class TestBroom < Test::Unit::TestCase
     assert(File.exist?("#{@test_dir}/_failure/bad.test"))
     assert(File.exist?("#{@test_dir}/_success/good.test"))
   end
+  
+  def test_big_file
+    bytes = (500 * (1024*1024)) # 500M
+    fname  = "big.txt"
+
+    broom = Thread.new do
+      Broom.sweep(@test_dir, :pattern => "*.txt") do |f|
+        true
+      end
+    end
+    
+    File.open("#{@test_dir}/#{fname}", 'w') do |f| 
+      f.write("x" * bytes)
+      sleep(2)
+    end
+    
+    sleep(2)
+    Thread.kill(broom)
+
+    file = "#{@test_dir}/_success/#{fname}"
+    assert(File.exist?(file))
+    assert_equal(bytes, File.size(file))
+  end
 
 end
