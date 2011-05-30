@@ -1,5 +1,5 @@
-Broom
-=====
+# Broom
+
  A simple module to help monitor a directory for new files and perform an action
 on each new file.  Broom periodically sweeps a directory, caching each file and its 
 last modification time.  After each sweep, Broom iterates through the cache and 
@@ -14,13 +14,12 @@ using the 'success_dir' and 'failure_dir' options.
 	/path/to/directory/_success
 	/path/to/directory/_failure
 
-Installation
-============
-        gem install broom
+## Installation
 
-Examples
-========
+    gem install broom
 
-	Broom.sweep('/tmp', :pattern => '*.ext') do |file|
-      Resque.enqueue(Job, file)
-	end
+## Example
+
+    Broom.sweep('/dropbox') do |f|
+      Resque.enqueue(Job, "#{File.dirname(f)}/_success/#{File.basename(f)}")
+    end
