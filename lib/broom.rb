@@ -7,7 +7,7 @@ end
 
 module Broom
 
-  VERSION = '0.3.1'
+  VERSION = '0.3.2'
   
   class Directory
 
@@ -37,20 +37,26 @@ module Broom
   extend self
   
   def sweep(path, options={}, &block)
+    options[:log] ||= true
+
     dir = Directory.new(path, options)
+    log = lambda do |msg| 
+      puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}" if options[:log]
+    end
+
     loop do
       cache = dir.entries
-      sleep options[:sleep] || 1
-      
+      sleep(options[:sleep] || 1)
+
       cache.each do |file, modified_at|
         next if modified_at != File.mtime(file)
         begin
           yield(file)
         rescue Object => boom
-          puts "#{Time.now} : #{boom.class}: #{boom.message}"
-          puts boom.backtrace.join("\n")
+          log.call("failure: #{File.basename(file)} [#{boom.message}]")
           FileUtils.mv(file, dir.failure_dir)
         else
+          log.call("success: #{File.basename(file)}")
           FileUtils.mv(file, dir.success_dir)
         end
       end
