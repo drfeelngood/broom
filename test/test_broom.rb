@@ -13,15 +13,21 @@ class TestBroom < Test::Unit::TestCase
     FileUtils.rm_r(@test_dir)
   end
   
-  def test_success_and_failure
-    ['good.test', 'bad.test'].each { |f| FileUtils.touch("#{@test_dir}/#{f}") }
-    broom = Thread.new do
-      Broom.sweep(@test_dir, :pattern => "*.test") do |f|
-        raise "Danger! #{f}" if f =~ /bad/
+  def thread_broom(&block)
+    Thread.new do
+      Broom.sweep(@test_dir) do |f|
+        yield(f)
       end
     end
+  end
+  
+  def test_success_and_failure
+    ['good.test', 'bad.test'].each { |f| FileUtils.touch("#{@test_dir}/#{f}") }
+    broom = thread_broom do |f|
+      raise "Danger! Danger!" if f =~ /bad/
+    end
 
-    sleep 5
+    sleep(5)
     Thread.kill(broom)
 
     assert(File.exist?("#{@test_dir}/_failure/bad.test"))
@@ -30,19 +36,16 @@ class TestBroom < Test::Unit::TestCase
   
   def test_big_file
     bytes = (500 * (1024*1024)) # 500M
-    fname  = "big.txt"
-
-    broom = Thread.new do
-      Broom.sweep(@test_dir, :pattern => "*.txt") do |f|
-        true
-      end
+    fname = "big.txt"
+    broom = thread_broom do |f|
+      true
     end
-    
+
     File.open("#{@test_dir}/#{fname}", 'w') do |f| 
       f.write("x" * bytes)
       sleep(2)
     end
-    
+
     sleep(2)
     Thread.kill(broom)
 
