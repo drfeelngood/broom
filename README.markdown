@@ -18,8 +18,23 @@ using the 'success_dir' and 'failure_dir' options.
 
     gem install broom
 
-## Example
+## Examples
 
     Broom.sweep('/dropbox') do |f|
       Resque.enqueue(Job, "#{File.dirname(f)}/_success/#{File.basename(f)}")
     end
+
+---
+
+    Thread.new do
+      Broom.sweep('/foo') do |f|
+        # do something
+      end
+    end
+    
+    Thread.new do
+      Broom.sweep('/bar') do |f|
+        # do something
+      end
+    end
+
