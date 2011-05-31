@@ -26,15 +26,19 @@ using the 'success_dir' and 'failure_dir' options.
 
 ---
 
-    Thread.new do
+    threads = []
+    
+    threads << Thread.new do
       Broom.sweep('/foo') do |f|
         # do something
       end
     end
     
-    Thread.new do
+    threads << Thread.new do
       Broom.sweep('/bar') do |f|
         # do something
       end
     end
+    
+    threads.each { |x| x.join }
 
