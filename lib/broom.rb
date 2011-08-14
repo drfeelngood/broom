@@ -1,13 +1,7 @@
 require 'fileutils'
 
-Signal.trap('INT') do
-  $stdout.puts "throwing in the towel..."
-  exit
-end
-
 module Broom
-
-  VERSION = '0.3.2'
+  VERSION = '0.3.3'
   
   class Directory
 
@@ -31,7 +25,7 @@ module Broom
       }
       files
     end
-        
+
   end
   
   extend self
@@ -44,14 +38,19 @@ module Broom
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}" if options[:log]
     end
 
-    loop do
+    Signal.trap('INT') do
+      log.call("stopping...")
+      @do_work = false
+    end
+
+    begin
       cache = dir.entries
       sleep(options[:sleep] || 1)
 
       cache.each do |file, modified_at|
         next if modified_at != File.mtime(file)
         begin
-          yield(file)
+          yield(file, File.dirname(file), File.basename(file), File.extname(file))
         rescue Object => boom
           log.call("failure: #{File.basename(file)} [#{boom.message}]")
           FileUtils.mv(file, dir.failure_dir)
@@ -60,7 +59,7 @@ module Broom
           FileUtils.mv(file, dir.success_dir)
         end
       end
-    end
+    end while @do_work
   end
   
 end
