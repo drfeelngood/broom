@@ -20,8 +20,8 @@ using the 'success_dir' and 'failure_dir' options.
 
 ## Examples
 
-    Broom.sweep('/dropbox') do |f|
-      Resque.enqueue(Job, "#{File.dirname(f)}/_success/#{File.basename(f)}")
+    Broom.sweep('/dropbox') do |path, dirname, basename, extname|
+      Resque.enqueue(Job, "#{dirname}/_success/#{basename}")
     end
 
 ---
@@ -29,13 +29,13 @@ using the 'success_dir' and 'failure_dir' options.
     threads = []
     
     threads << Thread.new do
-      Broom.sweep('/foo') do |f|
+      Broom.sweep('/foo') do |path, dirname, basename, extname|
         # do something
       end
     end
     
     threads << Thread.new do
-      Broom.sweep('/bar') do |f|
+      Broom.sweep('/bar') do |path, dirname, basename, extname|
         # do something
       end
     end
