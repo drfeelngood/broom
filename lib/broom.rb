@@ -1,7 +1,7 @@
 require 'fileutils'
 
 module Broom
-  VERSION = '0.3.3'
+  VERSION = '0.3.4'
   
   class Directory
 
@@ -37,6 +37,8 @@ module Broom
     log = lambda do |msg| 
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}" if options[:log]
     end
+
+    @do_work = true
 
     Signal.trap('INT') do
       log.call("stopping...")
